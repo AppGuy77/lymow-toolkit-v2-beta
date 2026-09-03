@@ -1,0 +1,73 @@
+# Lymow Toolkit — Home Assistant add-on manifest. The version placeholder is stamped by
+# tools/make_ha_addon.sh from the repo VERSION file, so the add-on tracks the toolkit release.
+name: Lymow Toolkit v2 Beta
+version: "2.0.1-beta"
+slug: lymow_toolkit
+description: BETA build — new features under test. Your data is kept; you can go back to the stable release at any time.
+url: https://github.com/AppGuy77/lymow-toolkit-downloads
+# armv7 IS SUPPORTED ON PURPOSE — DO NOT REMOVE IT.
+# Supervisor lists armv7 under ARCH_DEPRECATED (supervisor/const.py) and logs
+#   "App 'Lymow Toolkit' uses deprecated 'arch' values: ['armv7']"
+# on every store refresh. That warning is cosmetic: deprecated is not removed, Supervisor still
+# resolves it through ARCH_ALL_COMPAT, and it does NOT block install or update (the greyed-out
+# Update button reported against v1.45.0 was a separate, HA-side condition — an add-on whose
+# container is not running reports no stats, and HA marks its update entity unavailable).
+# Dropping armv7 here would lock 32-bit ARM users out of the add-on to silence a log line.
+# We build and publish an armv7 image; the add-on keeps offering it.
+arch:
+  - amd64
+  - aarch64
+  - armv7
+init: false
+startup: application
+boot: auto
+# host_network: the add-on sits directly on the Home Assistant host's LAN, so http://<HA-host-ip>:8787
+# is reachable from phones/PCs out of the box — the reliable setup on a Pi/NUC, where the bridge network
+# can fail to forward published ports to the LAN (the "works on localhost, refused from the LAN" symptom).
+host_network: true
+# INGRESS — a sidebar panel, Home Assistant's own login, and it works through Nabu Casa remote
+# access. ADDITIVE: host_network and the published port below stay exactly as they were, because
+# ingress cannot serve the two things that need a direct URL — the MJPEG address Home Assistant's
+# camera integration fetches, and the QR link a phone scans from outside HA.
+#
+# ingress_port is our REAL port, not 0. The docs offer 0 ("for apps that run on the host network,
+# you can use 0 and read the port later via the API") for add-ons that would rather be assigned
+# one; we already have a fixed port on the host network, so Supervisor proxies straight to it.
+ingress: true
+ingress_port: 8787
+# Supervisor BUFFERS an add-on's responses unless this is set, and the Toolkit's are not all short:
+# the WiFi camera is an endless MJPEG response that never "completes", the sign-in browser is a
+# long-lived stream of frames, and the dashboard's first paint is a burst of requests. Buffered,
+# the camera failed while 4G (a separate WebSocket path) worked, pages took minutes, and the
+# sign-in socket was dropped mid-flow.
+ingress_stream: true
+# THE ONE ENTRY IN THE SIDEBAR. Setup used to add a dashboard per mower with
+# show_in_sidebar:true as well, which predates ingress — a two-mower install then carried the
+# same thing three times. Those dashboards are kept but no longer listed (core/hadash.py
+# install_dashboard), so this is the entry, and it opens the real app exactly like OPEN WEB UI.
+panel_title: Lymow Toolkit
+panel_icon: mdi:robot-mower
+# "Stay signed in" keeps its unlock key HERE (mounted at /config), never in /data where the
+# encrypted record lives. Two different volumes on purpose: a copied add-on data folder, a shared
+# snapshot or a partial backup then carries one half and never both. The key is also tied to the
+# machine's own hardware, so even both halves are useless on another box.
+#
+# NO `devices:` ENTRY FOR THE TPM, deliberately. Sealing to a TPM chip would be a small upgrade for
+# the few x86 Home Assistant boxes that have one, but Home Assistant's docs do not say what
+# Supervisor does with a device path that does not exist — and it does not exist on any Raspberry
+# Pi. Risking add-on startup for every Pi user to gain a rare tier is a bad trade; the machine-bound
+# tier already makes a copied card or backup useless. Revisit only with a real Pi to test on.
+#
+# `addon_config` (not `app_config`): newer Supervisor renamed it and logs
+#   "App 'Lymow Toolkit' uses legacy map type 'addon_config'; use 'app_config' instead."
+# That warning is cosmetic — the old name still works everywhere — while the NEW name is unknown to
+# older Supervisor builds and would fail validation there. Same trade already documented for armv7
+# above: a log line costs nothing, locking users out costs everything.
+map:
+  - type: addon_config
+    read_only: false
+ports:
+  8787/tcp: 8787
+ports_description:
+  8787/tcp: Web dashboard
+webui: http://[HOST]:[PORT:8787]
