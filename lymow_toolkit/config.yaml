@@ -1,7 +1,7 @@
 # Lymow Toolkit — Home Assistant add-on manifest. The version placeholder is stamped by
 # tools/make_ha_addon.sh from the repo VERSION file, so the add-on tracks the toolkit release.
 name: Lymow Toolkit v2 Beta
-version: "2.1.0-beta"
+version: "2.1.1-beta"
 slug: lymow_toolkit
 description: BETA build — new features under test. Your data is kept; you can go back to the stable release at any time.
 url: https://github.com/AppGuy77/lymow-toolkit-downloads
@@ -41,6 +41,10 @@ ingress_port: 8787
 # the camera failed while 4G (a separate WebSocket path) worked, pages took minutes, and the
 # sign-in socket was dropped mid-flow.
 ingress_stream: true
+# PHONE NOTIFICATIONS without a pasted token (core/hanotify.py): the add-on may call Home Assistant's
+# own API through the Supervisor proxy (http://supervisor/core/api) with its SUPERVISOR_TOKEN — that
+# is what this grants. A saved long-lived token still wins when the user pasted one.
+homeassistant_api: true
 # THE ONE ENTRY IN THE SIDEBAR. Setup used to add a dashboard per mower with
 # show_in_sidebar:true as well, which predates ingress — a two-mower install then carried the
 # same thing three times. Those dashboards are kept but no longer listed (core/hadash.py

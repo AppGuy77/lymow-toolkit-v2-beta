@@ -1,14 +1,13 @@
-Lymow Toolkit v2.1.0-beta
+Lymow Toolkit v2.1.1-beta
 
 **Beta on its own download channel** — recommended for now to people running two or more mowers. It installs
 over your current Toolkit (sign-in, maps, settings and history are kept). To go back, install v1.54.2 from the
 stable releases page: https://github.com/AppGuy77/lymow-toolkit-downloads/releases/latest
 
 
-- New: drag the grip in the lower-left corner of the Overview map to make it taller or shorter — large properties can show every zone at once. The size is saved on the server and applies on every device.
-- Map settings now follow you across devices: map position and zoom per mower, and the heat-map and Freshness toggles are saved on the server, like the imagery alignment already was.
-- WiFi card: the quality word alone in the large value; dBm, network and address in the line beneath (matches the 4G card).
-- Includes the 2.0.x beta fixes: location-scoped camera, camera grid direct-WiFi link with retry, parallel fleet connect, and docks merging only within 2 ft.
+- Fixed: with two or more zones and a cross-cut pass, the second zone painted both colors at once — the crossing color now ends exactly where a zone ends (any number of zones, single-mower and Fleet Mode).
+- Fixed: the camera reconnects by itself in every link mode — WiFi only waits for the mower's WiFi signal (at least -70 dBm), 4G only retries every 5 seconds; Remote, Overview and grid cameras alike.
+- New: Home Assistant push notifications for every move the mower makes and every action the Toolkit takes, with Pause / Resume / Dock / Cancel / Clear error buttons on the notification — on automatically with Publish to Home Assistant (Settings → Home Assistant → Phone notifications). Each event is also a Home Assistant event entity.
 
 
 This beta channel updates independently of the stable Toolkit; report anything odd on the beta repo's Issues page.
