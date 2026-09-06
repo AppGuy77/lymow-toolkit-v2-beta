@@ -1,4 +1,4 @@
-> ## ⚠️ This is a BETA build (v2.1.6-beta)
+> ## ⚠️ This is a BETA build (v2.1.7-beta)
 >
 > It contains new features that have not been through field testing yet. Install it
 > only if you are happy to report problems.
@@ -31,7 +31,7 @@ fault auto-recovery, mow history, remote control, and more — for the Lymow One
    `https://github.com/AppGuy77/lymow-toolkit-downloads`
 
 3. Find **Lymow Toolkit** in the store list (refresh the page if it doesn't appear) and click
-   **Install**. The app builds on your machine — the first install can take a few minutes on a
+   **Install**. The app is downloaded ready-made for your machine — the first install can take a few minutes on a
    Raspberry Pi. Later updates are much faster.
 4. Click **Start**, then **Open Web UI** and sign in with your Lymow account (the same email and
    password as the official app). Prefer **"Sign in with Google"**? It opens an on-box browser
