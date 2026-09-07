@@ -1,4 +1,4 @@
-> ## ⚠️ This is a BETA build (v2.1.7-beta)
+> ## ⚠️ This is a BETA build (v2.1.8-beta)
 >
 > It contains new features that have not been through field testing yet. Install it
 > only if you are happy to report problems.

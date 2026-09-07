@@ -1,4 +1,4 @@
-> ## ⚠️ This is a BETA build (v2.1.7-beta)
+> ## ⚠️ This is a BETA build (v2.1.8-beta)
 >
 > It contains new features that have not been through field testing yet. Install it
 > only if you are happy to report problems.
@@ -60,6 +60,8 @@ Supervisor, which already knows how to do them safely.
 
 - **Port:** the dashboard listens on port 8787 (changeable on the app's Configuration tab under
   Network). Anything on your network can reach `http://<home-assistant-ip>:8787`.
+- **Port 8788 (UDP + TCP):** the WiFi camera picture for a Windows PC browsing on a plain `http://` page
+  crosses your network on this port. On Home Assistant OS there is nothing to open.
 - **Keep it running:** scheduled mows, fault auto-recovery, and history capture run from the
   app — leave it started (Start on boot is enabled by default).
 - **HA Container / Core users:** apps (add-ons) require Home Assistant OS or Supervised. On plain
