@@ -1,38 +1,32 @@
-Lymow Toolkit v2.5.1-beta
+Lymow Toolkit v2.5.2-beta
 
 **Beta on its own download channel** — recommended for now to people running two or more mowers. It installs
 over your current Toolkit (sign-in, maps, settings and history are kept). To go back, install the latest stable release from the
 stable releases page: https://github.com/AppGuy77/lymow-toolkit-downloads/releases/latest
 
-Everything below is a change from v2.5.0-beta.
+Everything below is a change from v2.5.1-beta.
 
 
-- **The Away access status should no longer flicker between "Starting" and "Service not running".** Two Toolkits on one Lymow account (for example a Home Assistant add-on and a PC) no longer knock each other off the relay every 30 seconds, and the mark beside the switch now names the real cause: **Key rejected by the relay — re-registering**, **Address in use by another Toolkit on this account** or **Relay unreachable**.
+- **Away access heals a dropped key on its own.** If the relay stops accepting this Toolkit's key while the mark beside the switch says **Address in use by another Toolkit on this account**, the Toolkit now registers its key again at once, and then every 15 minutes for as long as that lasts, so the away link should come back by itself.
+- **The camera grid should no longer get stuck after a location change** (rotation ignored, cameras silently stopped, Close doing nothing).
 
 
-## The Away access status stops flickering
+## Away access heals a dropped key on its own
 
-If you saw the mark beside the **Away access** switch alternate between ⌛ Starting and ❌ Service not
-running every few seconds while your mower-xxxx address still opened on your phone, this is the fix.
+The relay now lets a key hold only the address it is registered for. That closes a gap where one
+registered Toolkit could have requested another user's address. It also means a Toolkit whose own key has
+dropped off its address, which can happen when more than eight devices have been registered on one Lymow
+account, is refused with the same message as a genuine second device: **Address in use by another Toolkit
+on this account**.
 
-The cause was on the relay: it kept only one key per Lymow account, so when two Toolkits were signed in
-to the same account — for example a Home Assistant add-on and a PC, or a new PC while the old one was
-still running — each new registration threw the other Toolkit off. The thrown-off one re-registered about
-30 seconds later and threw the first one off in turn, for as long as both ran. Your address kept working
-from whichever Toolkit held it at that moment, which is why the phone was fine while the switch flickered.
+The Toolkit cannot tell those two apart, so it now handles both the same way: on the first refusal it
+registers its key again at once, and then at most every 15 minutes for as long as the refusals continue.
+For a dropped key that brings the away link back within seconds. For a real second device on the account
+it changes nothing, and the mark keeps saying which Toolkit holds the address.
 
-The relay now keeps every device's key, so both Toolkits stay registered. Only one of them can hold your
-address at a time, and the Toolkit now says so instead of flickering. The mark beside the switch is one of:
+## The camera grid should no longer get stuck after a location change
 
-- ✅ — the away link is up.
-- ⌛ **Starting** — the link is connecting.
-- ❌ **Key rejected by the relay — re-registering** — heals itself within about 30 seconds.
-- ❌ **Address in use by another Toolkit on this account** — a second Toolkit signed in to the same Lymow
-  account already holds your address. Only one can at a time; this one checks again every 30 seconds and
-  takes over when the other one goes away.
-- ❌ **Relay unreachable** — this computer cannot reach the relay server right now.
-- ❌ **Service not running** — away access is off, or its helper is not running on this computer.
-
-Hover the **?** beside the switch for the same list, and the glossary (📖) has an **Away access status**
-entry. A Toolkit that is refused now also waits longer between retries instead of knocking every few
-seconds, and its log says why a re-registration did not work when it does not.
+When you change location while the camera grid is open, the grid closes and reopens for the new
+location's mowers. If the old grid finished closing after the new one had already opened, the new grid lost
+its state: it ignored phone rotation, its cameras stopped without saying so, and its own Close button did
+nothing. The old grid now cleans up only its own cameras and leaves the new grid alone.
