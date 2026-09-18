@@ -1,32 +1,33 @@
-Lymow Toolkit v2.5.2-beta
+Lymow Toolkit v2.5.3-beta
 
 **Beta on its own download channel** — recommended for now to people running two or more mowers. It installs
 over your current Toolkit (sign-in, maps, settings and history are kept). To go back, install the latest stable release from the
 stable releases page: https://github.com/AppGuy77/lymow-toolkit-downloads/releases/latest
 
-Everything below is a change from v2.5.1-beta.
+Everything below is a change from v2.5.2-beta.
 
 
-- **Away access heals a dropped key on its own.** If the relay stops accepting this Toolkit's key while the mark beside the switch says **Address in use by another Toolkit on this account**, the Toolkit now registers its key again at once, and then every 15 minutes for as long as that lasts, so the away link should come back by itself.
-- **The camera grid should no longer get stuck after a location change** (rotation ignored, cameras silently stopped, Close doing nothing).
+- **Your away address can no longer change with how you sign in.** v2.5.2-beta could switch a Toolkit to a duplicate mower-xxxx address issued to a second sign-in identity of the same Lymow account (email+password, Google and Apple count as separate identities in Lymow's cloud). The link service now recognizes the account by its verified email and always returns its original address; a Toolkit that was switched returns to the original on its next start.
 
 
-## Away access heals a dropped key on its own
+## Your away address can no longer change with how you sign in
 
-The relay now lets a key hold only the address it is registered for. That closes a gap where one
-registered Toolkit could have requested another user's address. It also means a Toolkit whose own key has
-dropped off its address, which can happen when more than eight devices have been registered on one Lymow
-account, is refused with the same message as a genuine second device: **Address in use by another Toolkit
-on this account**.
+Lymow's cloud treats email+password, Google and Apple sign-ins to the same account as separate
+identities, and the link service issued each identity its own mower-xxxx address. A Toolkit kept the address
+it had saved for as long as it never asked the link service again, which is why a saved address carried
+over through every update until now.
 
-The Toolkit cannot tell those two apart, so it now handles both the same way: on the first refusal it
-registers its key again at once, and then at most every 15 minutes for as long as the refusals continue.
-For a dropped key that brings the away link back within seconds. For a real second device on the account
-it changes nothing, and the mark keeps saying which Toolkit holds the address.
+v2.5.2-beta added a re-registration that asks the link service again. On a Home Assistant add-on signed in
+through a different method than the one its saved address was issued to, that request came back with the
+other identity's address and the Toolkit adopted it. That was wrong, and this release fixes both sides:
 
-## The camera grid should no longer get stuck after a location change
+- **The link service** recognizes an account by its verified email. All identities of the same account
+  resolve to the account's original address, the one issued first, and no second address is ever issued
+  for the same email.
+- **The Toolkit** tells the link service which address it holds and refuses any change the service does not
+  explain. The one accepted change is the return from a duplicate to the account's original address, which
+  is logged in plain words. Every install checks its address once per start, so a Toolkit that was switched
+  to a duplicate by v2.5.2-beta returns to the original address on its first start after this update.
 
-When you change location while the camera grid is open, the grid closes and reopens for the new
-location's mowers. If the old grid finished closing after the new one had already opened, the new grid lost
-its state: it ignored phone rotation, its cameras stopped without saying so, and its own Close button did
-nothing. The old grid now cleans up only its own cameras and leaves the new grid alone.
+Your saved phone link stays what it was. If a Toolkit shows a different mower-xxxx address than the one you
+saved, update it and restart it once.
