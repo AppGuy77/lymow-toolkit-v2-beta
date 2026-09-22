@@ -1,7 +1,7 @@
 # Lymow Toolkit — Home Assistant add-on manifest. The version placeholder is stamped by
 # tools/make_ha_addon.sh from the repo VERSION file, so the add-on tracks the toolkit release.
 name: Lymow Toolkit v2 Beta
-version: "2.6.1-beta"
+version: "2.7.0"
 slug: lymow_toolkit
 # PULL, NEVER BUILD (v2.1.7). With `image:` set, Supervisor pulls this prebuilt multi-arch image for the
 # box's own architecture and, on every update, deletes the previous version's image. Without it the
@@ -24,7 +24,7 @@ environment:
   PYTHONUNBUFFERED: "1"
   LYMOW_DATA: /data
   LYMOW_KEY_DIR: /config/.lymow-key
-description: BETA build — new features under test. Your data is kept; you can go back to the stable release at any time.
+description: Local companion dashboard for the Lymow One robotic mower
 url: https://github.com/AppGuy77/lymow-toolkit-downloads
 # armv7 IS SUPPORTED ON PURPOSE — DO NOT REMOVE IT.
 # Supervisor lists armv7 under ARCH_DEPRECATED (supervisor/const.py) and logs
@@ -46,6 +46,14 @@ boot: auto
 # is reachable from phones/PCs out of the box — the reliable setup on a Pi/NUC, where the bridge network
 # can fail to forward published ports to the LAN (the "works on localhost, refused from the LAN" symptom).
 host_network: true
+# services (v1.60.2): the Supervisor hands this add-on the Mosquitto add-on's own login
+# (GET http://supervisor/services/mqtt: host, port, username, password) the moment that add-on runs,
+# so the Home Assistant device configures ITSELF — no broker address, no password, no pasted token
+# (core/supervisor.py mqtt_service, app/server.py _ha_autoconfig). `want`, not `need`: the Toolkit
+# starts without a broker and simply waits for one. No manager role is requested (owner decision):
+# installing Mosquitto stays the user's one click in the add-on store.
+services:
+  - mqtt:want
 # INGRESS — a sidebar panel, Home Assistant's own login, and it works through Nabu Casa remote
 # access. ADDITIVE: host_network and the published port below stay exactly as they were, because
 # ingress cannot serve the two things that need a direct URL — the MJPEG address Home Assistant's
